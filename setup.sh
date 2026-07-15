@@ -7,31 +7,43 @@ sudo pacman -S --needed --noconfirm \
   pipewire-jack \
   wireplumber \
   alsa-utils \
+  alsa-plugins \
   lib32-pipewire \
-  lib32-pipewire-jack
+  lib32-pipewire-jack \
+  lib32-alsa-plugins \
+  lib32-mpg123 \
+  openal \
+  lib32-openal \
+  mpg123
 
 
-  # 2 - Drivers and gaming stuff 
+# 2 - Core graphics and Vulkan
 
-  sudo pacman -S --needed --noconfirm \
+sudo pacman -S --needed --noconfirm \
   mesa \
   lib32-mesa \
   vulkan-radeon \
   lib32-vulkan-radeon \
   vulkan-icd-loader \
-  lib32-vulkan-icd-loader \
+  lib32-vulkan-icd-loader
+
+# 3 - Hardware video acceleration
+
+sudo pacman -S --needed --noconfirm \
   libva \
   lib32-libva \
   libva-mesa-driver \
-  lib32-libva-mesa-driver \
+  lib32-libva-mesa-driver
+
+# 4 - CPU performance optimiser
+
+sudo pacman -S --needed --noconfirm \
   gamemode \
-  lib32-gamemode \
-  alsa-plugins \
-  lib32-alsa-plugins \
-  openal \
-  lib32-openal \
-  mpg123 \
-  lib32-mpg123 \
+  lib32-gamemode
+
+# 5 - Launcher UI, WebViews & Fonts
+
+sudo pacman -S --needed --noconfirm \
   lib32-gtk3 \
   libxslt \
   libjpeg-turbo \
@@ -39,4 +51,3 @@ sudo pacman -S --needed --noconfirm \
   giflib \
   lib32-giflib \
   ttf-liberation
-  
