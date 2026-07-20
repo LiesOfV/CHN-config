@@ -2,7 +2,7 @@
 
 TERMINAL     = "alacritty"
 FILE_MANAGER = "nautilus"
-BROWSER      = "firefox"
+BROWSER      = "flatpak run io.gitlab.librewolf-community"
 EDITOR       = "gnome-text-editor --new-window"
 CALCULATOR   = "gnome-calculator"
 
