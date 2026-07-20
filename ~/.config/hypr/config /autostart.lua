@@ -4,7 +4,7 @@
 hl.on("hyprland.start", function ()
     hl.exec_cmd("dbus-update-activation-environment --systemd --all")
     hl.exec_cmd("noctalia")
-    hl.exec("hyprsunset --temperature 4900")
+    hl.exec_cmd("hyprsunset --temperature 4900")
     hl.exec_cmd("steam")
     hl.exec_cmd("flatpak run dev.vencord.Vesktop")
     hl.exec_cmd("xhost +SI:localuser:root")
