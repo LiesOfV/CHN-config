@@ -1,4 +1,12 @@
-# 1 - Audio stack
+# 1 - Update
+
+sudo pacman -Syu
+
+# 2 - Uninstall
+
+sudo pacman -Rns kitty dolphin firefox cachyos-firefox-settings
+
+# 2 - Audio stack
 
 sudo pacman -S --needed --noconfirm \
   pipewire \
@@ -17,7 +25,7 @@ sudo pacman -S --needed --noconfirm \
   mpg123
 
 
-# 2 - Core graphics and Vulkan
+# 3 - Core graphics and Vulkan
 
 sudo pacman -S --needed --noconfirm \
   mesa \
@@ -27,7 +35,7 @@ sudo pacman -S --needed --noconfirm \
   vulkan-icd-loader \
   lib32-vulkan-icd-loader
 
-# 3 - Hardware video acceleration
+# 4 - Hardware video acceleration
 
 sudo pacman -S --needed --noconfirm \
   libva \
@@ -35,13 +43,13 @@ sudo pacman -S --needed --noconfirm \
   libva-mesa-driver \
   lib32-libva-mesa-driver
 
-# 4 - CPU performance optimiser
+# 5 - CPU performance optimiser
 
 sudo pacman -S --needed --noconfirm \
   gamemode \
   lib32-gamemode
 
-# 5 - Launcher UI, WebViews & Fonts
+# 6 - Launcher UI, WebViews & Fonts
 
 sudo pacman -S --needed --noconfirm \
   lib32-gtk3 \
@@ -51,3 +59,17 @@ sudo pacman -S --needed --noconfirm \
   giflib \
   lib32-giflib \
   ttf-liberation
+
+# 7 - Steam
+
+sudo pacman -S steam
+
+# 8 - Flatpak
+
+sudo pacman -S flatpak
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+
+
+
+
