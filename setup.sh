@@ -69,6 +69,17 @@ sudo pacman -S steam
 sudo pacman -S flatpak
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
+# 9 - Flatpaks
+
+flatpak install flathub io.gitlab.librewolf-community
+flatpak install flathub com.google.Chrome
+flatpak install flathub io.github.hkdb.Aerion
+flatpak install flathub dev.vencord.Vesktop
+flatpak install flathub community.pathofbuilding.PathOfBuilding
+flatpak install flathub io.github.Faugus.faugus-launcher
+
+
+
 
 
 
