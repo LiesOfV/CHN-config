@@ -10,15 +10,20 @@ set -g fish_prompt_pwd_dir_length 0
 # overwrite greeting
 # potentially disabling fastfetch
 function fish_greeting
+    set -l hypr_ver (hyprctl version 2>/dev/null | string match -r '[0-9]+\.[0-9]+(?:\.[0-9]+)?' | head -n 1)
+    # Extracts strictly 'v5.0.0' or '5.0.0', dropping the app name and commit hash
+    set -l noctalia_ver (noctalia --version 2>/dev/null | string match -r 'v?[0-9]+\.[0-9]+(?:\.[0-9]+)?')
+    set -l cachy_kernel (uname -r)
 
-set -l hypr_ver (hyprctl version 2>/dev/null | head -n 1 | string match -r -o '[0-9]+\.[0-9]+(\.[0-9]+)?')
-set -l noctalia_ver (noctalia --version 2>/dev/null)
-set -l cachy_kernel (uname -r)
+    # Enable bold text
+    set_color --bold
 
-echo "CachyOS:  Kernel $cachy_kernel (x86-64-v4)"
-echo "Hyprland: $hypr_ver"
-echo "Noctalia: $noctalia_ver"
+    echo "CachyOS:  Kernel $cachy_kernel (x86-64-v4)"
+    echo "Hyprland: $hypr_ver"
+    echo "Noctalia: $noctalia_ver"
 
+    # Reset back to normal terminal styling
+    set_color normal
 end
 
 set -gx EZA_COLORS "uu=38;2;87;242;201"
