@@ -6,7 +6,6 @@ alias update='sudo pacman -Syu && flatpak update -y'
 # Stop shrinking folder names in the prompt
 set -g fish_prompt_pwd_dir_length 0
 
-
 # overwrite greeting
 # potentially disabling fastfetch
 function fish_greeting
