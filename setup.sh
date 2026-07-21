@@ -78,9 +78,24 @@ flatpak install flathub dev.vencord.Vesktop
 flatpak install flathub community.pathofbuilding.PathOfBuilding
 flatpak install flathub io.github.Faugus.faugus-launcher
 
+# 10 - Fix steam not seeing 2nd drive due to it locking
 
+sudo mkdir -p /mnt/games
+sudo cp /etc/fstab /etc/fstab.bak
 
+grep -q "LABEL=extradrive" /etc/fstab || \
+  echo "LABEL=extradrive  /mnt/games  btrfs  defaults,nofail  0  2" | sudo tee -a /etc/fstab
 
+sudo mount -a
+ls /mnt/games
 
+# 11 - Auto-login 
 
+sudo tee /etc/sddm.conf > /dev/null <<EOF
+[Autologin]
+Session=hyprland
+User=lemon
+EOF
+
+# 12 - 
 
