@@ -36,6 +36,11 @@ sudo pacman -Rns --noconfirm kitty dolphin firefox cachyos-firefox-settings || \
 # ---------------------------------------------------------------------------
 log "Installing audio stack (PipeWire)"
 
+# `yes` gets SIGPIPE (exit 141) once pacman stops reading stdin, and with
+# `pipefail` that nonzero makes the whole pipeline "fail" even though pacman
+# itself succeeded - which then kills the script under `set -e`. Scope
+# pipefail off for just this one pipeline.
+set +o pipefail
 yes | sudo pacman -S --needed \
   pipewire \
   pipewire-pulse \
@@ -51,6 +56,7 @@ yes | sudo pacman -S --needed \
   openal \
   lib32-openal \
   mpg123
+set -o pipefail
 
 # ---------------------------------------------------------------------------
 # 4 - Core graphics and Vulkan (RDNA4 / RX 9060 XT)
