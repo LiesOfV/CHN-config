@@ -60,16 +60,25 @@ sudo pacman -S --needed --noconfirm \
   lib32-giflib \
   ttf-liberation
 
-# 7 - Steam
+# 7 - Other software
+sudo pacman -S --needed --noconfirm \
+  ttf-firacode-nerd \
+  celluloid \
+  nautilus \
+  hyprsunset \
+  tailscale \
+  grim
+  
+# 8 - Steam
 
 sudo pacman -S steam
 
-# 8 - Flatpak
+# 9 - Flatpak
 
 sudo pacman -S flatpak
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
-# 9 - Flatpaks
+# 10 - Flatpaks
 
 flatpak install flathub io.gitlab.librewolf-community
 flatpak install flathub com.google.Chrome
@@ -78,7 +87,7 @@ flatpak install flathub dev.vencord.Vesktop
 flatpak install flathub community.pathofbuilding.PathOfBuilding
 flatpak install flathub io.github.Faugus.faugus-launcher
 
-# 10 - Fix steam not seeing 2nd drive due to locking
+# 11 - Fix steam not seeing 2nd drive due to locking
 
 sudo mkdir -p /mnt/games
 sudo cp /etc/fstab /etc/fstab.bak
@@ -89,7 +98,7 @@ grep -q "LABEL=extradrive" /etc/fstab || \
 sudo mount -a
 sudo chown -R $USER:$USER /mnt/games
 
-# 11 - Auto-login 
+# 12 - Auto-login 
 
 sudo tee /etc/sddm.conf > /dev/null <<EOF
 [Autologin]
@@ -97,5 +106,12 @@ Session=hyprland
 User=lemon
 EOF
 
-# 12 - 
+# 13 - Increasing shader size
 
+mkdir -p ~/.config/environment.d
+grep -q '^MESA_SHADER_CACHE_MAX_SIZE=' ~/.config/environment.d/gaming.conf 2>/dev/null && \
+  sed -i 's/^MESA_SHADER_CACHE_MAX_SIZE=.*/MESA_SHADER_CACHE_MAX_SIZE=12G/' ~/.config/environment.d/gaming.conf || \
+  echo "MESA_SHADER_CACHE_MAX_SIZE=12G" >> ~/.config/environment.d/gaming.conf
+
+# 14 -   
+  
