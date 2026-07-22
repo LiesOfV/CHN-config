@@ -104,23 +104,30 @@ sudo pacman -S --needed --noconfirm \
   nautilus \
   hyprsunset \
   tailscale \
-  grim
+  grim \
+  swayimg
 
 # ---------------------------------------------------------------------------
-# 9 - Steam
+# 9 - Swayimg turn off data overlay
+# ---------------------------------------------------------------------------
+
+mkdir -p ~/.config/swayimg && grep -qxF 'swayimg.text.hide()' ~/.config/swayimg/init.lua 2>/dev/null || echo 'swayimg.text.hide()' >> ~/.config/swayimg/init.lua
+
+# ---------------------------------------------------------------------------
+# 10 - Steam
 # ---------------------------------------------------------------------------
 log "Installing Steam"
 sudo pacman -S --needed --noconfirm steam
 
 # ---------------------------------------------------------------------------
-# 10 - Flatpak
+# 11 - Flatpak
 # ---------------------------------------------------------------------------
 log "Installing Flatpak and adding Flathub remote"
 sudo pacman -S --needed --noconfirm flatpak
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # ---------------------------------------------------------------------------
-# 11 - Flatpaks
+# 12 - Flatpaks
 # ---------------------------------------------------------------------------
 log "Installing Flatpak applications"
 flatpak install -y --noninteractive flathub io.gitlab.librewolf-community
@@ -132,7 +139,7 @@ flatpak install -y --noninteractive flathub io.github.Faugus.faugus-launcher
 flatpak install -y --noninteractive flathub org.gimp.GIMP
 
 # ---------------------------------------------------------------------------
-# 12 - Fix Steam not seeing 2nd drive (mount + permissions)
+# 13 - Fix Steam not seeing 2nd drive (mount + permissions)
 # ---------------------------------------------------------------------------
 log "Configuring second drive mount (/mnt/games)"
 sudo mkdir -p /mnt/games
@@ -148,7 +155,7 @@ fi
 sudo chown -R "$USER:$USER" /mnt/games
 
 # ---------------------------------------------------------------------------
-# 13 - Auto-login
+# 14 - Auto-login
 # ---------------------------------------------------------------------------
 # sddm.conf.d drop-ins load BEFORE /etc/sddm.conf, and /etc/sddm.conf wins
 # for any key it already defines - so if the base file already has a
@@ -175,7 +182,7 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 14 - Increase shader cache size
+# 15 - Increase shader cache size
 # ---------------------------------------------------------------------------
 log "Setting MESA shader cache size"
 mkdir -p ~/.config/environment.d
@@ -186,7 +193,7 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 15 - Kernel optimizations
+# 16 - Kernel optimizations
 # ---------------------------------------------------------------------------
 log "Applying sysctl kernel tweaks"
 if ! sudo grep -q "^vm.swappiness=" /etc/sysctl.conf; then
@@ -204,7 +211,7 @@ fi
 sudo sysctl -p
 
 # ---------------------------------------------------------------------------
-# 16 - Disable auto-mute so speakers work
+# 17 - Disable auto-mute so speakers work
 # ---------------------------------------------------------------------------
 # Instead of a hardcoded card name (which can shift between installs),
 # loop over every ALSA card actually present and try the control on each.
@@ -224,14 +231,14 @@ fi
 sudo alsactl store
 
 # ---------------------------------------------------------------------------
-# 17 - Final sync: catch anything mid-script left half-updated
+# 18 - Final sync: catch anything mid-script left half-updated
 # ---------------------------------------------------------------------------
 log "Running final pacman + flatpak update pass"
 sudo pacman -Syu --noconfirm
 flatpak update -y --noninteractive
 
 # ---------------------------------------------------------------------------
-# 18 - Set sudo/user password (interactive, run last on purpose)
+# 19 - Set sudo/user password (interactive, run last on purpose)
 # ---------------------------------------------------------------------------
 # Run last so it doesn't block the rest of setup if you want to walk away.
 # chpasswd (used here) does not go through the CachyOS installer's password
