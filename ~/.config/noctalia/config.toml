@@ -138,3 +138,6 @@ capsule_fill = "on_primary"
 display = "none"
 inactive_pill_size = 1.0
 pill_scale = 0.80
+
+[osd.kinds]
+volume_input = false
