@@ -8,11 +8,13 @@ FILES=(
   "~/.config/fish/config.fish|$HOME/.config/fish/config.fish"
   "~/.config/alacritty/alacritty.toml|$HOME/.config/alacritty/alacritty.toml"
   "~/.config/noctalia/config.toml|$HOME/.config/noctalia/config.toml"
+  "~/.config/hypr/config/animations.lua|$HOME/.config/hypr/config/animations.lua"
   "~/.config/hypr/config/autostart.lua|$HOME/.config/hypr/config/autostart.lua"
   "~/.config/hypr/config/binds.lua|$HOME/.config/hypr/config/binds.lua"
   "~/.config/hypr/config/misc.lua|$HOME/.config/hypr/config/misc.lua"
   "~/.config/hypr/config/monitors.lua|$HOME/.config/hypr/config/monitors.lua"
   "~/.config/hypr/config/variables.lua|$HOME/.config/hypr/config/variables.lua"
+  "~/.config/hypr/config/windowrules.lua|$HOME/.config/hypr/config/windowrules.lua"
 )
 
 ok=0
