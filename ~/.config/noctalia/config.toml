@@ -141,3 +141,6 @@ pill_scale = 0.80
 
 [osd.kinds]
 volume_input = false
+
+[notification]
+enable_daemon = false
