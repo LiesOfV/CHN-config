@@ -3,6 +3,12 @@ set -euo pipefail
 
 BASE="https://raw.githubusercontent.com/LiesOfV/CHN-config/refs/heads/main"
 
+# format: "repo-path|destination-path"
+# NOTE: the "~" on the left side of each "|" is a LITERAL folder name in the
+# repo (LiesOfV/CHN-config actually has a directory named "~"), not a home-dir
+# shortcut -- it is intentionally left unexpanded. Only the right side (after
+# "|") uses $HOME, which is correct. See: https://www.shellcheck.net/wiki/SC2088
+
 # shellcheck disable=SC2088
 FILES=(
   "~/.config/fish/config.fish|$HOME/.config/fish/config.fish"
