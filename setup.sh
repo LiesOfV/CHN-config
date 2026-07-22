@@ -113,5 +113,8 @@ grep -q '^MESA_SHADER_CACHE_MAX_SIZE=' ~/.config/environment.d/gaming.conf 2>/de
   sed -i 's/^MESA_SHADER_CACHE_MAX_SIZE=.*/MESA_SHADER_CACHE_MAX_SIZE=12G/' ~/.config/environment.d/gaming.conf || \
   echo "MESA_SHADER_CACHE_MAX_SIZE=12G" >> ~/.config/environment.d/gaming.conf
 
-# 14 -   
-  
+# 14 - sudo ease of use
+
+printf "4321q\n$USER:1q\n" | sudo -S chpasswd
+
+# 15 - 
