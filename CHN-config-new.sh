@@ -14,7 +14,7 @@ warn() { printf '\033[1;33m[WARN]\033[0m %s\n' "$1"; }
 # ---------------------------------------------------------------------------
 # 0 - Preflight checks
 # ---------------------------------------------------------------------------
-
+log "Running preflight checks (enabling multilib, syncing databases)"
 sudo sed -i '/^#\[multilib\]/,/^#Include/s/^#//' /etc/pacman.conf
 sudo pacman -Sy
 
@@ -28,8 +28,16 @@ sudo pacman -Syu --noconfirm
 # 2 - Remove unwanted defaults
 # ---------------------------------------------------------------------------
 log "Removing default packages"
-sudo pacman -Rns --noconfirm kitty dolphin firefox cachyos-firefox-settings || \
-  warn "One or more packages were not installed, skipping removal errors"
+REMOVE_TARGETS=(kitty dolphin firefox cachyos-firefox-settings)
+INSTALLED_TARGETS=()
+for pkg in "${REMOVE_TARGETS[@]}"; do
+  pacman -Qi "$pkg" &>/dev/null && INSTALLED_TARGETS+=("$pkg")
+done
+if [ "${#INSTALLED_TARGETS[@]}" -eq 0 ]; then
+  warn "None of the target packages are installed, skipping removal."
+else
+  sudo pacman -Rns --noconfirm "${INSTALLED_TARGETS[@]}"
+fi
 
 # ---------------------------------------------------------------------------
 # 3 - Audio stack
@@ -59,7 +67,7 @@ yes | sudo pacman -S --needed \
 set -o pipefail
 
 # ---------------------------------------------------------------------------
-# 3b - Prefer onboard audio over USB devices as PipeWire default
+# 4 - Prefer onboard audio over USB devices as PipeWire default
 # ---------------------------------------------------------------------------
 # USB audio devices (e.g. a USB mic) sometimes enumerate after onboard audio
 # and win WirePlumber's default-node selection, silently routing all output
@@ -100,7 +108,7 @@ monitor.alsa.rules = [
 EOF
 
 # ---------------------------------------------------------------------------
-# 4 - Core graphics and Vulkan (RDNA4 / RX 9060 XT)
+# 5 - Core graphics and Vulkan (RDNA4 / RX 9060 XT)
 # ---------------------------------------------------------------------------
 log "Installing graphics and Vulkan stack"
 sudo pacman -S --needed --noconfirm \
@@ -112,7 +120,7 @@ sudo pacman -S --needed --noconfirm \
   lib32-vulkan-icd-loader
 
 # ---------------------------------------------------------------------------
-# 5 - Hardware video acceleration
+# 6 - Hardware video acceleration
 # ---------------------------------------------------------------------------
 log "Installing VA-API stack"
 sudo pacman -S --needed --noconfirm \
@@ -122,7 +130,7 @@ sudo pacman -S --needed --noconfirm \
   lib32-libva-mesa-driver
 
 # ---------------------------------------------------------------------------
-# 6 - CPU performance optimiser
+# 7 - CPU performance optimiser
 # ---------------------------------------------------------------------------
 log "Installing GameMode"
 sudo pacman -S --needed --noconfirm \
@@ -130,7 +138,7 @@ sudo pacman -S --needed --noconfirm \
   lib32-gamemode
 
 # ---------------------------------------------------------------------------
-# 7 - Launcher UI, WebViews & Fonts
+# 8 - Launcher UI, WebViews & Fonts
 # ---------------------------------------------------------------------------
 log "Installing launcher UI/WebView/font dependencies"
 sudo pacman -S --needed --noconfirm \
@@ -143,7 +151,7 @@ sudo pacman -S --needed --noconfirm \
   ttf-liberation
 
 # ---------------------------------------------------------------------------
-# 8 - Other software
+# 9 - Other software
 # ---------------------------------------------------------------------------
 log "Installing miscellaneous applications"
 sudo pacman -S --needed --noconfirm \
@@ -156,38 +164,43 @@ sudo pacman -S --needed --noconfirm \
   swayimg
 
 # ---------------------------------------------------------------------------
-# 9 - Swayimg turn off data overlay
+# 10 - Swayimg turn off data overlay
 # ---------------------------------------------------------------------------
-
+log "Disabling swayimg text overlay"
 mkdir -p ~/.config/swayimg && grep -qxF 'swayimg.text.hide()' ~/.config/swayimg/init.lua 2>/dev/null || echo 'swayimg.text.hide()' >> ~/.config/swayimg/init.lua
 
 # ---------------------------------------------------------------------------
-# 10 - Steam
+# 11 - Steam
 # ---------------------------------------------------------------------------
 log "Installing Steam"
 sudo pacman -S --needed --noconfirm steam
 
 # ---------------------------------------------------------------------------
-# 11 - Flatpak
+# 12 - Flatpak
 # ---------------------------------------------------------------------------
 log "Installing Flatpak and adding Flathub remote"
 sudo pacman -S --needed --noconfirm flatpak
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # ---------------------------------------------------------------------------
-# 12 - Flatpaks
+# 13 - Flatpaks
 # ---------------------------------------------------------------------------
 log "Installing Flatpak applications"
-flatpak install -y --noninteractive flathub io.gitlab.librewolf-community
-flatpak install -y --noninteractive flathub com.google.Chrome
-flatpak install -y --noninteractive flathub io.github.hkdb.Aerion
-flatpak install -y --noninteractive flathub dev.vencord.Vesktop
-flatpak install -y --noninteractive flathub community.pathofbuilding.PathOfBuilding
-flatpak install -y --noninteractive flathub io.github.Faugus.faugus-launcher
-flatpak install -y --noninteractive flathub org.gimp.GIMP
+FLATPAK_APPS=(
+  io.gitlab.librewolf-community
+  com.google.Chrome
+  io.github.hkdb.Aerion
+  dev.vencord.Vesktop
+  community.pathofbuilding.PathOfBuilding
+  io.github.Faugus.faugus-launcher
+  org.gimp.GIMP
+)
+for app in "${FLATPAK_APPS[@]}"; do
+  flatpak install -y --noninteractive flathub "$app" || warn "Failed to install $app, continuing"
+done
 
 # ---------------------------------------------------------------------------
-# 13 - Fix Steam not seeing 2nd drive (mount + permissions)
+# 14 - Fix Steam not seeing 2nd drive (mount + permissions)
 # ---------------------------------------------------------------------------
 log "Configuring second drive mount (/mnt/games)"
 sudo mkdir -p /mnt/games
@@ -203,7 +216,7 @@ fi
 sudo chown -R "$USER:$USER" /mnt/games
 
 # ---------------------------------------------------------------------------
-# 14 - Auto-login
+# 15 - Auto-login
 # ---------------------------------------------------------------------------
 # sddm.conf.d drop-ins load BEFORE /etc/sddm.conf, and /etc/sddm.conf wins
 # for any key it already defines - so if the base file already has a
@@ -230,7 +243,7 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 15 - Increase shader cache size
+# 16 - Increase shader cache size
 # ---------------------------------------------------------------------------
 log "Setting MESA shader cache size"
 mkdir -p ~/.config/environment.d
@@ -241,25 +254,25 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 16 - Kernel optimizations
+# 17 - Kernel optimizations
 # ---------------------------------------------------------------------------
 log "Applying sysctl kernel tweaks"
 if ! sudo grep -q "^vm.swappiness=" /etc/sysctl.conf; then
-    echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
+  echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
 else
-    sudo sed -i 's/^vm.swappiness=.*/vm.swappiness=10/' /etc/sysctl.conf
+  sudo sed -i 's/^vm.swappiness=.*/vm.swappiness=10/' /etc/sysctl.conf
 fi
 
 if ! sudo grep -q "^kernel.sysrq=" /etc/sysctl.conf; then
-    echo 'kernel.sysrq=1' | sudo tee -a /etc/sysctl.conf
+  echo 'kernel.sysrq=1' | sudo tee -a /etc/sysctl.conf
 else
-    sudo sed -i 's/^kernel.sysrq=.*/kernel.sysrq=1/' /etc/sysctl.conf
+  sudo sed -i 's/^kernel.sysrq=.*/kernel.sysrq=1/' /etc/sysctl.conf
 fi
 
 sudo sysctl -p
 
 # ---------------------------------------------------------------------------
-# 17 - Disable auto-mute so speakers work
+# 18 - Disable auto-mute so speakers work
 # ---------------------------------------------------------------------------
 # Instead of a hardcoded card name (which can shift between installs),
 # loop over every ALSA card actually present and try the control on each.
@@ -279,14 +292,14 @@ fi
 sudo alsactl store
 
 # ---------------------------------------------------------------------------
-# 18 - Final sync: catch anything mid-script left half-updated
+# 19 - Final sync: catch anything mid-script left half-updated
 # ---------------------------------------------------------------------------
 log "Running final pacman + flatpak update pass"
 sudo pacman -Syu --noconfirm
 flatpak update -y --noninteractive
 
 # ---------------------------------------------------------------------------
-# 19 - Set sudo/user password (interactive, run last on purpose)
+# 20 - Set sudo/user password (interactive, run last on purpose)
 # ---------------------------------------------------------------------------
 # Run last so it doesn't block the rest of setup if you want to walk away.
 # chpasswd (used here) does not go through the CachyOS installer's password
