@@ -14,13 +14,9 @@ warn() { printf '\033[1;33m[WARN]\033[0m %s\n' "$1"; }
 # ---------------------------------------------------------------------------
 # 0 - Preflight checks
 # ---------------------------------------------------------------------------
-# lib32-* packages (audio, mesa, gamemode, steam itself) all require the
-# multilib repo. Fail fast with a clear message instead of a wall of
-# cryptic pacman errors partway through.
-if ! grep -Eq '^\[multilib\]' /etc/pacman.conf; then
-  echo "multilib repo is not enabled in /etc/pacman.conf. Enable it (uncomment the [multilib] block), run 'sudo pacman -Sy', then re-run this script." >&2
-  exit 1
-fi
+
+sudo sed -i '/^#\[multilib\]/,/^#Include/s/^#//' /etc/pacman.conf
+sudo pacman -Sy
 
 # ---------------------------------------------------------------------------
 # 1 - Update system
