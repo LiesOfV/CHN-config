@@ -59,6 +59,47 @@ yes | sudo pacman -S --needed \
 set -o pipefail
 
 # ---------------------------------------------------------------------------
+# 3b - Prefer onboard audio over USB devices as PipeWire default
+# ---------------------------------------------------------------------------
+# USB audio devices (e.g. a USB mic) sometimes enumerate after onboard audio
+# and win WirePlumber's default-node selection, silently routing all output
+# to a device that can't play sound. This bumps priority for onboard/PCI
+# audio cards above USB audio devices generally, so setup output always
+# lands on the built-in codec unless you deliberately switch it.
+log "Setting onboard audio as preferred PipeWire default"
+mkdir -p ~/.config/wireplumber/wireplumber.conf.d
+cat > ~/.config/wireplumber/wireplumber.conf.d/51-prefer-onboard-audio.conf <<'EOF'
+monitor.alsa.rules = [
+  {
+    matches = [
+      {
+        node.name = "~alsa_output.pci-.*"
+      }
+    ]
+    actions = {
+      update-props = {
+        priority.driver  = 1200
+        priority.session = 1200
+      }
+    }
+  }
+  {
+    matches = [
+      {
+        node.name = "~alsa_output.usb-.*"
+      }
+    ]
+    actions = {
+      update-props = {
+        priority.driver  = 500
+        priority.session = 500
+      }
+    }
+  }
+]
+EOF
+
+# ---------------------------------------------------------------------------
 # 4 - Core graphics and Vulkan (RDNA4 / RX 9060 XT)
 # ---------------------------------------------------------------------------
 log "Installing graphics and Vulkan stack"
