@@ -80,12 +80,14 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 
 # 10 - Flatpaks
 
-flatpak install flathub io.gitlab.librewolf-community
-flatpak install flathub com.google.Chrome
-flatpak install flathub io.github.hkdb.Aerion
-flatpak install flathub dev.vencord.Vesktop
-flatpak install flathub community.pathofbuilding.PathOfBuilding
-flatpak install flathub io.github.Faugus.faugus-launcher
+flatpak install flathub io.gitlab.librewolf-community -y
+flatpak install flathub com.google.Chrome -y
+flatpak install flathub io.github.hkdb.Aerion -y
+flatpak install flathub dev.vencord.Vesktop -y
+flatpak install flathub community.pathofbuilding.PathOfBuilding -y
+flatpak install flathub io.github.Faugus.faugus-launcher -y
+flatpak install flathub org.gimp.GIMP -y
+
 
 # 11 - Fix steam not seeing 2nd drive due to locking
 
@@ -113,8 +115,28 @@ grep -q '^MESA_SHADER_CACHE_MAX_SIZE=' ~/.config/environment.d/gaming.conf 2>/de
   sed -i 's/^MESA_SHADER_CACHE_MAX_SIZE=.*/MESA_SHADER_CACHE_MAX_SIZE=12G/' ~/.config/environment.d/gaming.conf || \
   echo "MESA_SHADER_CACHE_MAX_SIZE=12G" >> ~/.config/environment.d/gaming.conf
 
-# 14 - sudo ease of use
+# 14 - Sudo ease of use
 
 printf "4321q\n$USER:1q\n" | sudo -S chpasswd
 
-# 15 - 
+# 15 - Kernel optimizations
+
+if ! sudo grep -q "^vm.swappiness=" /etc/sysctl.conf; then
+    echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
+else
+    sudo sed -i 's/^vm.swappiness=.*/vm.swappiness=10/' /etc/sysctl.conf
+fi
+
+if ! sudo grep -q "^kernel.sysrq=" /etc/sysctl.conf; then
+    echo 'kernel.sysrq=1' | sudo tee -a /etc/sysctl.conf
+else
+    sudo sed -i 's/^kernel.sysrq=.*/kernel.sysrq=1/' /etc/sysctl.conf
+fi
+
+sudo sysctl -p
+
+# 16 - Dissable auto music on Alsamixer so speakers can work 
+
+amixer -D hw:Generic_1 sset "Auto-Mute Mode" Disabled 2>/dev/null || echo "WARN: amixer device not found, skipping."
+
+sudo alsactl store
