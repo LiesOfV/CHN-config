@@ -35,6 +35,13 @@ sudo pacman -Rns --noconfirm kitty dolphin firefox cachyos-firefox-settings || \
 # 3 - Audio stack
 # ---------------------------------------------------------------------------
 log "Installing audio stack (PipeWire)"
+
+# pipewire-jack conflicts with jack2 (both provide 'jack'); remove jack2 first
+if pacman -Qi jack2 &>/dev/null; then
+  log "Removing jack2 (conflicts with pipewire-jack)"
+  sudo pacman -R --noconfirm jack2
+fi
+
 sudo pacman -S --needed --noconfirm \
   pipewire \
   pipewire-pulse \
