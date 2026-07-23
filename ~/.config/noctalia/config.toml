@@ -80,8 +80,8 @@ gpu_poll_seconds = 2
 
 [theme]
 mode = "dark"
-source = "wallpaper"
-wallpaper_scheme = "m3-tonal-spot"
+source = "community"
+community_palette = "Github Dark"
 
     [theme.templates]
     builtin_ids = [ "btop", "gtk3", "gtk4", "kcolorscheme", "kitty", "qt", "alacritty" ]
@@ -89,6 +89,7 @@ wallpaper_scheme = "m3-tonal-spot"
 [widget.clock]
 color = "secondary"
 format = "{:  %A, %d %B - %R }"
+scale = 1.10
 
 [widget.launcher]
 color = "secondary"
