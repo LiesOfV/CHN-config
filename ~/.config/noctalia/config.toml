@@ -89,7 +89,7 @@ community_palette = "Github Dark"
 [widget.clock]
 color = "secondary"
 format = "{:  %A, %d %B - %R }"
-scale = 1.10
+scale = 1.15
 
 [widget.launcher]
 color = "secondary"
